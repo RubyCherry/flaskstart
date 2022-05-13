@@ -1,6 +1,14 @@
-from flask import (
-    Blueprint, flash, g, redirect, render_template, request, session, url_for, jsonify
-)
+from email import message
+from pyexpat.errors import messages
+from webbrowser import get
+from flask import ( Blueprint, flash, g, after_this_request,
+ redirect, render_template, current_app,
+  request,  url_for, jsonify)
+from flask import session as sess
+
+from werkzeug.utils import secure_filename
+import os,sys
+# from flask import current_app
 
 from app import db
 
@@ -9,7 +17,7 @@ print('name - general', __name__)
 
 
 @bp_gen.route('/')
-@bp_gen.route('/index')
+@bp_gen.route('/index' )
 def index():
     return render_template(
         '/general/index.html',
@@ -57,3 +65,52 @@ def owl():
         '/general/owl.html',
         title='Карусель',
     )
+
+
+
+# @bp_gen.after_app_request
+# def clear_sess(response):
+#     print("???",response)
+#     sess['file_mess']=""
+#     return response
+
+
+@bp_gen.route('/file')
+def file():
+    
+  return render_template(
+        '/general/upload.html',
+        title='Выгрузка файла',
+        mess=sess.get( 'file_mess',"")
+    )    
+
+@bp_gen.route('/savefile',methods=['POST'])
+def savefile():
+    if request.method == 'POST':
+      print(request.files)
+
+      if 'datafile' not in request.files:
+          return redirect(request.origin+url_for('general.file',message="Сохранение файла невозможно"))
+
+      file = request.files['datafile']  
+      fls =  request.files.getlist("datafile") 
+      filename = secure_filename(file.filename) #mimetype
+      #https://stackoverflow.com/questions/11817182/uploading-multiple-files-with-flask
+
+      print('arr? ',type(file), file,type(fls), fls)
+
+      print("filename",file.filename)
+      print('secfilename ',filename)  
+      print('cwd',os.getcwd())
+
+
+      for f in fls:
+          print("from file list",f.mimetype)
+
+  
+      sess['file_mess']= filename
+
+      file.save(os.path.join(current_app.config['UPLOAD_FOLDER'],filename))
+    #   return redirect(request.origin+url_for('general.file',message="Файл "+ filename+ " сохранен"))
+      return redirect(request.origin+url_for('general.file'))
+      
