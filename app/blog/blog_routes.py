@@ -20,7 +20,7 @@ def index():
         ' ORDER BY created DESC'
     ).fetchall()
 
-    return render_template('blog/index.html', posts=posts)
+    return render_template('blog/index.html', post=post)
 
 
 @bp_blog.route('/check', methods=('GET', 'POST'))
@@ -50,7 +50,7 @@ def check():
     ).fetchall()
 
     
-   return render_template('blog/check.html', posts=posts)
+   return render_template('blog/check.html', post=post)
 
 
 
