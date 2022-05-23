@@ -1,0 +1,120 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container small-form">
+    <form action={{url_for('general.savefile')}} multiple required enctype="multipart/form-data" method="POST">
+
+        <div class="field">
+            <label class="label">Message</label>
+            <div class="control">
+                <textarea class="textarea" placeholder="Textarea" name="taria"></textarea>
+            </div>
+        </div>
+        <div class="field">
+            <div class="select is-multiple">
+                <select multiple size="8" name="sel">
+                    <option value="One">One</option>
+                    <option value="Two">Two</option>
+                    <option value="Three">Three</option>
+                </select>
+            </div>
+
+        </div>
+
+
+        <div class="file has-name">
+            <label class="file-label ">
+                <input id="dnld" class="file-input" required multiple type="file" name="datafile">
+                <span class="file-cta">
+                    <span class="file-icon">
+                        <i class="fas fa-upload"></i>
+                    </span>
+                    <span class="file-label">
+                        Выберите файл…
+                    </span>
+                </span>
+                <!-- <span class="file-name">
+                    Здесь м.б. описание файла
+                </span> -->
+            </label>
+            <div class="dropdown is-hoverable">
+                <div class="dropdown-trigger">
+                    <button class="button" aria-haspopup="true" aria-controls="dropdown-menu4">
+                        <span>Hover me</span>
+                        <span class="icon is-small">
+                            <i class="fas fa-angle-down" aria-hidden="true"></i>
+                        </span>
+                    </button>
+                </div>
+                <div class="dropdown-menu" id="dropdown-menu4" role="menu">
+                    <div class="dropdown-content">
+                        <div class="dropdown-item">
+                            <p>You can insert <strong>any type of content</strong> within the dropdown menu.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <!-- </label> -->
+        </div>
+        <div>
+            <input id="finp" class="button" type="submit" value="Отправить">
+        </div>
+        <div class="c1 c2">
+            {{mess}}
+        </div>
+        {% if request.args.get('message')%}
+        <div class="message is-success">
+            {{ request.args.get('message') }}
+        </div>
+        {% endif %}
+    </form>
+
+</div>
+
+<style>
+    form {
+        width: 100%;
+        margin: 30px;
+    }
+
+    .small-form {
+        width: 400px;
+    }
+
+    h1 {
+        color: red
+    }
+</style>
+{%endblock%}
+
+{%block scripts%}
+<script>
+    const fileInput = document.querySelector('.file input[type=file]');
+    let inp = document.querySelector('#finp')
+    fileInput.onchange = () => {
+        if (fileInput.files.length > 0) {
+            const fileNames = document.querySelector('.dropdown-content')//'.file .file-name');
+
+            console.log(fileInput.files)
+
+            let farr = Array.from(fileInput.files)
+            farr.forEach(fl => {
+                console.log(fl, fl.name)
+                let div = document.createElement("div")
+                div.classList.add("dropdown-item")
+                div.append("свойства файла")
+                fileNames.append(div)
+            });
+
+
+            // console.log('file', fileInput.files[0])
+            // fileName.textContent = fileInput.files[0].name;
+
+            // inp.disabled = true
+        }
+    }
+</script>
+{%endblock%}
