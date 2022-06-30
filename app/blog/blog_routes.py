@@ -14,7 +14,7 @@ bp_blog = Blueprint('blog', __name__,url_prefix='/blog',template_folder="templat
 @bp_blog.route('/')
 def index():
     db = get_db()
-    posts = db.execute(
+    post = db.execute(
         'SELECT p.id, title, body, created, author_id, username'
         ' FROM post p JOIN user u ON p.author_id = u.id'
         ' ORDER BY created DESC'
